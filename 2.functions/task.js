@@ -45,5 +45,5 @@ console.log(makeWork([[14,21,36],[15,26,39]],worker)); =>80  вместо 0
 
 // Задание 3
 function worker2(arr) {
-  return getArrayParams.max(arr) - getArrayParams.min(arr);
+  return getArrayParams(arr).max - getArrayParams(arr).min;
 }
