@@ -81,45 +81,19 @@ class Library {
     }
 
     findBookBy(type, value) {
-    for (let i = 0; i < this.books.length; i++) {
-            if (this.books[i][type] === value) {
-                return this.books[i];
-            } 
-        }
-    return null;    
+        let searchResult = this.books.find(book => book[type] === value);
+        return (typeof searchResult === 'object') ? searchResult : null; 
     }
-    
-        /* 
-        Почему-то не срабатывает декларативный метод ниже:
-        {
-            let searchResult = this.books.forEach((book) => book[type].includes(value));
-            return (typeof searchResult === 'object') ? searchResult : null; 
-        }
-        */
-    
+        
     giveBookByName(bookName) {
-        for (let i = 0; i < this.books.length; i++) {
-            if (this.books[i].name === bookName) {
-                let shareBook = this.books[i];
-                this.books.splice(i,1);
-                return shareBook;
-            } 
-        }
-    return null;    
+       let reqBook = this.books.find(book => book.name === bookName);
+       if (typeof reqBook === 'object') {
+            this.books.splice(this.books.indexOf(reqBook), 1);
+            return reqBook;
+       }
+       else return null;
     }
-        /* 
-        Почему-то не срабатывает декларативный метод ниже:
-        {
-            let itemIdx;
-            let shareBook;
-            this.books.find((book,idx) => {
-                shareBook = book.name.includes(bookName); 
-                itemIdx = idx;});
-            this.books.splice(itemIdx,1);
-            return (typeof shareBook === 'object') ? shareBook : null; 
-        }
-        */
-
+     
 }
 
 //Задача №3. Журнал успеваемости
@@ -157,13 +131,12 @@ class Student {
     }
     
     getAverage() {
-        const AverageMarksArrays = [];
-        for (let i = 0; i < Object.keys(this.#journal).length; i++) {
-            AverageMarksArrays.push(this.#journal[Object.keys(this.#journal)[i]]);
-        }
-        let allAverageMarks = AverageMarksArrays.flat();
-        let sumTotal = 0;
-        allAverageMarks.forEach((averageMark) => {sumTotal += averageMark});
-        return sumTotal / allAverageMarks.length;
+        let sumOfAveMarks = 0;
+        let countOfSubjects = 0;
+        Object.entries(this.#journal).forEach(([subject]) => {
+            sumOfAveMarks += this.getAverageBySubject(subject);
+            countOfSubjects++;
+        });
+        return sumOfAveMarks / countOfSubjects;
     }
 }
