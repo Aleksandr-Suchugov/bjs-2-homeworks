@@ -139,4 +139,14 @@ class Student {
         });
         return sumOfAveMarks / countOfSubjects;
     }
+
+    /*версия от Сергея Кундрюкова:
+    getAverage() {
+        const subjects = Object.keys(this.#journal)
+        let sumOfAveMarks = 0;
+        subjects.forEach(([subject]) => {
+            sumOfAveMarks += this.getAverageBySubject(subject);
+        });
+        return sumOfAveMarks / subjects.length;
+    } */
 }
