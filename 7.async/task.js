@@ -1,68 +1,71 @@
 class AlarmClock {
     constructor () {
         this.alarmCollection = [],
-        this.timerId = undefined
+        this.timerId = null
     }
     addClock(time, callback, id) {
-        try {
-            if (typeof id === 'undefined') {
-                throw new Error('error text');
-            }
-            else if (typeof this.alarmCollection.find(id => clock.id === id) === 'undefined') {
-                return console.error('The Alert already exist.');
-            }
+        if (typeof id === 'undefined') {
+            throw new Error('error text');
         }
-        finally {
-            return this.alarmCollection.push({id, time, callback});
+        else if (typeof this.alarmCollection.find(clock => clock.id === id) !== 'undefined') {
+            return console.error('The Alert already exist.');
         }
+        return this.alarmCollection.push({id, time, callback});
     }
     removeClock (id) {
         let inputArrLength = this.alarmCollection.length;
-        let outputArrLength = this.alarmCollection.filter(clock => clock.id !== id).length;
-        return (outputArrLength < inputArrLength) ? true : false;
+        this.alarmCollection = this.alarmCollection.filter(clock => clock.id !== id);
+        let outputArrLength = this.alarmCollection.length;
+        return outputArrLength < inputArrLength;
     }
     getCurrentFormattedTime () {
-        let actualTime = new Date.now();
-        return actualTime.getHours() + ':' + actualTime.getMinutes();
+        let zeroAdd = (number) => {
+            if (number < 10) {
+                return '0' + number;
+            }
+            return number;
+        }
+        let actualTime = new Date();
+        let minutes = zeroAdd(actualTime.getMinutes());
+        let hours = zeroAdd(actualTime.getHours());
+        return hours + ':' + minutes;
     }
     start () {
         let checkClock = (clock) => {
             let alarm = this.getCurrentFormattedTime();
             if (clock.time === alarm) {
-                return clock.callback;
+                return clock.callback();
             }
         }
-        if (typeof this.timerId === 'undefined') {
+        if (this.timerId === null) {
             this.timerId = setInterval(() => {
-                let callIndex = 0;
-                checkClock(this.alarmCollection[callIndex]);
-                callIndex ++;
+                this.alarmCollection.forEach(clock => checkClock(clock));
             }, 1000);
         }
         return;
     }
     stop () {
-        if (typeof this.timerId !== 'undefined') {
+        if (this.timerId !== null) {
             clearInterval(this.timerId);
-            return delete this[timerId];
+            return this.timerId = null;
         }
-        return;
     }
     printAlarms () {
-        return console.log(this.alarmCollection.forEach(clock => clock.id, clock.time));
+        return this.alarmCollection.forEach(clock => console.log(clock.id + ': ' + clock.time));
     }
     clearAlarms () {
         this.stop();
-        return this.alarmCollection.forEach(clock => delete clock);
+        return this.alarmCollection = [];
     }
 }
 
 //Sample:
 
 let PhoneClock = new AlarmClock();
-PhoneClock.addClock('00:20', () => console.log ('New week!'), 1);
-PhoneClock.addClock('00:21', () => console.log ('New week!!!'), 2);
+PhoneClock.addClock('22:55', () => console.log ('New week!'), 1);
+PhoneClock.addClock('22:56', () => console.log ('New week!!!'), 2);
 PhoneClock.removeClock(2);
-PhoneClock.addClock('00:22', () => console.log ('Go sleep'), 3);
+PhoneClock.addClock('22:57', () => console.log ('Go sleep'), 3);
+PhoneClock.start();
 PhoneClock.stop();
 PhoneClock.printAlarms();
